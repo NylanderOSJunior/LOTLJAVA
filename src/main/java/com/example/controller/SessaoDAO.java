@@ -1,12 +1,14 @@
-package controller;
+package com.example.controller;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import model.Sessao;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import com.example.model.Sessao;
 
 public class SessaoDAO {
     private Connection connection = ConexaoController.getConnection();

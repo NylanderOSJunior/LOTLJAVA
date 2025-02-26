@@ -1,7 +1,8 @@
-package controller;
+package com.example.controller;
+
+import com.example.model.Sessao;
 
 import javafx.collections.ObservableList;
-import model.Sessao;
 
 public class SessaoController {
     private SessaoDAO sessaoDAO = new SessaoDAO();

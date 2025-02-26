@@ -1,6 +1,7 @@
-package view;
+package com.example.view;
 
-import controller.ConexaoController;
+import com.example.controller.ConexaoController;
+
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -44,7 +45,7 @@ public class ConexaoView extends Application {
             }
         });
 
-        VBox layout = new VBox(10,hostField, portaField, servicoField, usuarioField, senhaField, conectarButton, statusLabel);
+        VBox layout = new VBox(15,hostField, portaField, servicoField, usuarioField, senhaField, conectarButton, statusLabel);
         layout.setAlignment(Pos.CENTER);
 
         Scene scene = new Scene(layout, 800, 500);

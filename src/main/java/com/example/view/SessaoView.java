@@ -1,24 +1,27 @@
-package view;
+package com.example.view;
 
-import controller.SessaoController;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.stage.FileChooser;
-import model.Sessao;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+
+import com.example.controller.SessaoController;
+import com.example.model.Sessao;
 
 public class SessaoView extends Application {
     private SessaoController controller = new SessaoController();
@@ -26,10 +29,12 @@ public class SessaoView extends Application {
     private TextField searchField = new TextField();
     private PieChart pieChart = new PieChart();
     private Button exportButton = new Button("Exportar CSV");
+    private Button btnVoltar = new Button("Voltar para Home");
 
     @SuppressWarnings("unchecked")
     @Override
 public void start(Stage primaryStage) {
+
     TableColumn<Sessao, Integer> colSid = new TableColumn<>("SID");
     colSid.setCellValueFactory(new PropertyValueFactory<>("sid"));
 
@@ -61,13 +66,16 @@ public void start(Stage primaryStage) {
     // Botão de exportação
     exportButton.setOnAction(e -> exportarParaCSV());
 
+    //botão de voltar para a Home
+    btnVoltar.setOnAction(e -> voltarParaHome(primaryStage));
+
     // Atualização automática
     Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), e -> atualizarTabela()));
     timeline.setCycleCount(Timeline.INDEFINITE);
     timeline.play();
 
     // Melhorias na interface
-    VBox vbox = new VBox(searchField, tableView, pieChart, versaoLabel, exportButton); // Adiciona o Label de versão
+    VBox vbox = new VBox(searchField, tableView, pieChart, versaoLabel, exportButton,btnVoltar); // Adiciona o Label de versão
     vbox.setSpacing(10);
     vbox.getStyleClass().add("main-container");
 
@@ -93,6 +101,11 @@ public void start(Stage primaryStage) {
                 verificarConsumoAlto(sessoes);
             });
         }).start();
+    }
+
+    private void voltarParaHome(Stage primaryStage) {
+        // Carregar a tela home
+        new HomeView().start(primaryStage);
     }
     
 
