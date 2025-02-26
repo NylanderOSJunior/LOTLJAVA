@@ -1,8 +1,8 @@
 package com.example;
 
-import javafx.application.Application;
+import com.example.view.HomeView;
 
-import view.HomeView;
+import javafx.application.Application;
 
 public class Main {
     public static void main(String[] args) {
