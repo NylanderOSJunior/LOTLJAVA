@@ -1,37 +1,36 @@
 package com.example.view;
 
-import javafx.application.Application;
-import javafx.scene.Scene;
+import com.example.controller.InfraestruturaController;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
-import javafx.geometry.Pos;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class InfraestruturaView extends Application {
-    @Override
-    public void start(Stage primaryStage) {
+public class InfraestruturaView {
+    private InfraestruturaController controller = new InfraestruturaController();
 
-        // Criar botão de voltar para a Home
+    public VBox criarTela(StackPane contentArea) {
+        // Criando o layout da tela
+        VBox layout = new VBox(15);
+        layout.setPadding(new Insets(20));
+        layout.setAlignment(Pos.CENTER);
+
+        // Criando rótulo com informações do sistema
+        Label lblInfo = new Label(controller.obterInformacoesSistema());
+        lblInfo.setStyle("-fx-font-size: 14px;");
+
+        // Botão para voltar à tela principal
         Button btnVoltar = new Button("Voltar para Home");
-        btnVoltar.setOnAction(e -> voltarParaHome(primaryStage));
+        btnVoltar.setOnAction(e -> contentArea.getChildren().setAll(new Label("Bem-vindo à Home!")));
 
-        // Layout
-        StackPane layout = new StackPane();
-        layout.getChildren().addAll(new Label("Informações de Infraestrutura"), btnVoltar);
+        // Adiciona os componentes ao layout
+        layout.getChildren().addAll(lblInfo, btnVoltar);
 
-        // Posiciona o botão no canto inferior direito
-        StackPane.setAlignment(btnVoltar, Pos.TOP_RIGHT);
-
-        Scene scene = new Scene(layout, 800, 500);
-        scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
-        primaryStage.setScene(scene);
-        primaryStage.setTitle("Infraestrutura");
-        primaryStage.show();
+        return layout;
     }
 
-    private void voltarParaHome(Stage primaryStage) {
-        // Carregar a tela home
-        new HomeView().start(primaryStage);
-    }
 }
+

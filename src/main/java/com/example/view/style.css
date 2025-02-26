@@ -8,7 +8,7 @@
     -fx-text-fill: white;
     -fx-font-size: 14px;
     -fx-padding: 8px 15px;
-    -fx-pref-width: 180px;
+    -fx-pref-width: 200px;
     -fx-border-radius: 5px;
     -fx-background-radius: 5px;
 }
@@ -16,6 +16,12 @@
 .button:hover {
     -fx-background-color: #777;
     -fx-text-fill: white;
+}
+
+.text-field, .password-field {
+    -fx-font-size: 14px;
+    -fx-padding: 8px;
+    -fx-pref-width: 200px;
 }
 
 .text-field {
@@ -29,4 +35,8 @@
 
 .pie-chart {
     -fx-padding: 10px;
+}
+
+.label {
+    -fx-font-size: 14px;
 }

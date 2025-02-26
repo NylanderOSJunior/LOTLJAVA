@@ -34,8 +34,8 @@ public class HomeView extends Application {
 
         btnConectar.setOnAction(e -> carregarTela(new ConexaoView(), primaryStage));
         btnFuncionalidades.setOnAction(e -> carregarTela(new FuncionalidadesView(), primaryStage));
-        btnInfra.setOnAction(e -> carregarTela(new InfraestruturaView(), primaryStage));
-
+        //btnInfra.setOnAction(e -> carregarTela(new InfraestruturaView(), primaryStage));
+        btnInfra.setOnAction(e -> contentArea.getChildren().setAll(new InfraestruturaView().criarTela(contentArea)));
         menuLateral.getChildren().addAll( btnConectar, btnFuncionalidades, btnInfra);
 
         // Área de conteúdo
@@ -50,7 +50,7 @@ public class HomeView extends Application {
         Scene scene = new Scene(layout, 800, 500);
         scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
         primaryStage.setScene(scene);
-        primaryStage.setTitle("Home - Monitoramento Oracle");
+        primaryStage.setTitle("Home - Monitoramento de Maquina");
         primaryStage.show();
     }
 
