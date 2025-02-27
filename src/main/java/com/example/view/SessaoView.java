@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -20,29 +21,48 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import com.example.controller.ConexaoController;
 import com.example.controller.SessaoController;
 import com.example.model.Sessao;
 
 public class SessaoView extends Application {
+    private ConexaoController controllercon = new ConexaoController();
     private SessaoController controller = new SessaoController();
     private TableView<Sessao> tableView = new TableView<>();
+    private TableView<Sessao> tableBlock = new TableView<>();
     private TextField searchField = new TextField();
     private PieChart pieChart = new PieChart();
     private Button exportButton = new Button("Exportar CSV");
+    private Button btnVoltarcon = new Button("Voltar");
     private Button btnVoltar = new Button("Voltar para Home");
+    private Button btnAplicarTempo = new Button("Aplicar Tempo");
+
+    // Spinner e botão para ajustar o intervalo de recarregamento
+    private Spinner<Integer> spinnerTempo = new Spinner<>(5, 60, 5); // Intervalo entre 5 e 60 segundos
+    private Timeline timeline;
 
     @SuppressWarnings("unchecked")
     @Override
 public void start(Stage primaryStage) {
 
+    // Títulos das tabelas
+    tableView.setPlaceholder(new Label("Monitoramento de Sessões"));
+    tableBlock.setPlaceholder(new Label("Sem Sessões em Lock"));
+
     TableColumn<Sessao, Integer> colSid = new TableColumn<>("SID");
     colSid.setCellValueFactory(new PropertyValueFactory<>("sid"));
 
-    TableColumn<Sessao, Integer> colSerial = new TableColumn<>("Serial");
-    colSerial.setCellValueFactory(new PropertyValueFactory<>("serial"));
+    TableColumn<Sessao, Integer> colSql_id = new TableColumn<>("SQL_ID");
+    colSql_id.setCellValueFactory(new PropertyValueFactory<>("sql_id"));
 
-    TableColumn<Sessao, String> colUsername = new TableColumn<>("Usuário");
+    TableColumn<Sessao, String> colUsername = new TableColumn<>("Schema");
     colUsername.setCellValueFactory(new PropertyValueFactory<>("username"));
+
+    TableColumn<Sessao, String> colOsuser = new TableColumn<>("Usuário");
+    colOsuser.setCellValueFactory(new PropertyValueFactory<>("osuser"));
+
+    TableColumn<Sessao, String> colProgram = new TableColumn<>("Modulo");
+    colProgram.setCellValueFactory(new PropertyValueFactory<>("program"));
 
     TableColumn<Sessao, String> colStatus = new TableColumn<>("Status");
     colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
@@ -50,7 +70,71 @@ public void start(Stage primaryStage) {
     TableColumn<Sessao, String> colMachine = new TableColumn<>("Máquina");
     colMachine.setCellValueFactory(new PropertyValueFactory<>("machine"));
 
-    tableView.getColumns().addAll(colSid, colSerial, colUsername, colStatus, colMachine);
+    TableColumn<Sessao, String> colSeconds_in_wait = new TableColumn<>("TempoExec");
+    colSeconds_in_wait.setCellValueFactory(new PropertyValueFactory<>("seconds_in_wait"));
+
+    TableColumn<Sessao, String> colSql_text = new TableColumn<>("Comando SQL");
+    colSql_text.setCellValueFactory(new PropertyValueFactory<>("sql_text"));
+
+    TableColumn<Sessao, Integer> colBSid = new TableColumn<>("SID");
+    colBSid.setCellValueFactory(new PropertyValueFactory<>("sid"));
+
+    TableColumn<Sessao, Integer> colBSql_id = new TableColumn<>("SQL_ID");
+    colBSql_id.setCellValueFactory(new PropertyValueFactory<>("sql_id"));
+
+    TableColumn<Sessao, String> colBUsername = new TableColumn<>("Schema");
+    colBUsername.setCellValueFactory(new PropertyValueFactory<>("username"));
+
+    TableColumn<Sessao, String> colBOsuser = new TableColumn<>("Usuário");
+    colBOsuser.setCellValueFactory(new PropertyValueFactory<>("osuser"));
+
+    TableColumn<Sessao, String> colBProgram = new TableColumn<>("Modulo");
+    colBProgram.setCellValueFactory(new PropertyValueFactory<>("program"));
+
+    TableColumn<Sessao, String> colBStatus = new TableColumn<>("Status");
+    colBStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
+
+    TableColumn<Sessao, String> colEvent = new TableColumn<>("Evento");
+    colEvent.setCellValueFactory(new PropertyValueFactory<>("event"));
+
+    TableColumn<Sessao, String> colBlocking_session = new TableColumn<>("SessaoDoLock");
+    colBlocking_session.setCellValueFactory(new PropertyValueFactory<>("blocking_session"));
+
+    tableView.getColumns().addAll(colSid, colSql_id, colUsername, colOsuser, colProgram, colStatus, colMachine, colSeconds_in_wait, colSql_text);
+    tableBlock.getColumns().addAll(colBSid, colBSql_id, colBUsername, colBOsuser, colBProgram, colBStatus, colEvent, colBlocking_session);
+
+     // Labels para os títulos
+     Label labelMonitoramento = new Label("Monitoramento de Sessões");
+     labelMonitoramento.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+ 
+     Label labelLock = new Label("Sessões em Lock");
+     labelLock.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+
+    // Spinner para selecionar o tempo de recarregamento (em segundos)
+    spinnerTempo.setEditable(true); // Permite edição manual do tempo
+    spinnerTempo.setMaxWidth(60);
+
+    // Criando o timeline inicial com o intervalo padrão de 5 segundos
+    timeline = new Timeline(new KeyFrame(Duration.seconds(5), e -> atualizarTabela()));
+    timeline.setCycleCount(Timeline.INDEFINITE);  // Recarregar indefinidamente
+    timeline.play();  // Inicia o timeline
+
+    // Aplicar o novo tempo de recarregamento
+    btnAplicarTempo.setOnAction(e -> aplicarTempoRecarregamento());
+
+    // Listener para seleção de linha e exibição do comando SQL
+    tableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+        if (newValue != null) {
+            String sqlText = newValue.getSql_text(); // Obtém o comando SQL
+            abrirTelaComandoSQL(sqlText);  // Abre a tela com o comando SQL
+        }
+    });
+
+    // Listener para fechar o aplicativo e desconectar do banco de dados
+    primaryStage.setOnCloseRequest(event -> {
+        controllercon.desconectar(); // Chama o método de desconexão
+        System.out.println("Aplicativo fechado e sessão do Oracle encerrada.");
+    });
 
     // Label para exibir a versão do banco
     Label versaoLabel = new Label("Versão do Banco: Carregando...");
@@ -66,22 +150,25 @@ public void start(Stage primaryStage) {
     // Botão de exportação
     exportButton.setOnAction(e -> exportarParaCSV());
 
+    //botão de voltar 
+    btnVoltarcon.setOnAction(e -> voltarParaConecOra(primaryStage));
+
     //botão de voltar para a Home
     btnVoltar.setOnAction(e -> voltarParaHome(primaryStage));
 
-    // Atualização automática
-    Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), e -> atualizarTabela()));
-    timeline.setCycleCount(Timeline.INDEFINITE);
-    timeline.play();
+    HBox searchBox = new HBox(10, searchField, spinnerTempo, btnAplicarTempo);
+        searchBox.setAlignment(Pos.CENTER_LEFT);
+    
+        HBox searchBox2 = new HBox(10, exportButton, btnVoltarcon, btnVoltar);
+        searchBox2.setAlignment(Pos.CENTER_LEFT);
 
     // Melhorias na interface
-    VBox vbox = new VBox(searchField, tableView, pieChart, versaoLabel, exportButton,btnVoltar); // Adiciona o Label de versão
+    VBox vbox = new VBox(searchBox, labelMonitoramento, tableView, labelLock, tableBlock, pieChart, versaoLabel, searchBox2); // Adiciona o Label de versão
     vbox.setSpacing(10);
     vbox.getStyleClass().add("main-container");
 
     Scene scene = new Scene(vbox, 800, 500);
     scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
-
     primaryStage.setScene(scene);
     primaryStage.setTitle("Monitoramento de Sessões");
     primaryStage.show();
@@ -89,29 +176,61 @@ public void start(Stage primaryStage) {
     atualizarTabela();
 }
 
+    private void aplicarTempoRecarregamento() {
+        // Pega o tempo selecionado no spinner
+        int tempoSelecionado = spinnerTempo.getValue();
+        
+        // Para o timeline atual (se já houver um)
+        if (timeline != null) {
+            timeline.stop();  // Para o timeline atual
+        }
+
+        // Cria um novo Timeline com o intervalo ajustado
+        timeline = new Timeline(new KeyFrame(Duration.seconds(tempoSelecionado), e -> atualizarTabela()));
+        timeline.setCycleCount(Timeline.INDEFINITE);  // Recarregar indefinidamente
+        timeline.play();  // Inicia o novo timeline
+    }
 
     private void atualizarTabela() {
-        // Executa a consulta em um thread separado para evitar bloqueio da UI
         new Thread(() -> {
             ObservableList<Sessao> sessoes = controller.carregarSessoes(searchField.getText());
-            // Atualiza a UI na thread de execução (JavaFX)
+            ObservableList<Sessao> sessoesblock = controller.carregarSessoesblock(searchField.getText());
+
             javafx.application.Platform.runLater(() -> {
-                tableView.setItems(sessoes);
+                tableView.getItems().clear(); // Certifica-se de limpar antes de atualizar
+                tableBlock.getItems().clear(); // Certifica-se de limpar antes de atualizar
+                tableView.setItems(FXCollections.observableArrayList(sessoes)); // Garante que a UI é atualizada
+                tableBlock.setItems(FXCollections.observableArrayList(sessoesblock)); // Garante que a UI é atualizada
                 atualizarGrafico();
                 verificarConsumoAlto(sessoes);
             });
         }).start();
     }
+    private void abrirTelaComandoSQL(String sqlText) {
+        ComandoSQLView comandoSQLView = new ComandoSQLView(sqlText);
+        Stage stage = new Stage();
+        comandoSQLView.start(stage);
+    }
 
     private void voltarParaHome(Stage primaryStage) {
+        //Desconectar sessão
+        controllercon.desconectar();
         // Carregar a tela home
         new HomeView().start(primaryStage);
+    }
+
+    private void voltarParaConecOra(Stage primaryStage) {
+        //Desconectar sessão
+        controllercon.desconectar();
+        // Carregar a tela Conexao
+        new ConexaoView().start(primaryStage);
     }
     
 
     private void atualizarGrafico() {
         int ativas = 0, inativas = 0;
-
+    
+        // Conta as sessões ativas e inativas
         for (Sessao sessao : tableView.getItems()) {
             if ("ACTIVE".equalsIgnoreCase(sessao.getStatus())) {
                 ativas++;
@@ -119,12 +238,14 @@ public void start(Stage primaryStage) {
                 inativas++;
             }
         }
-
+    
+        // Cria os dados do gráfico
         ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList(
-                new PieChart.Data("Ativas", ativas),
-                new PieChart.Data("Inativas", inativas)
+                new PieChart.Data("Ativas (" + ativas + ")", ativas),
+                new PieChart.Data("Inativas (" + inativas + ")", inativas)
         );
-
+    
+        // Atualiza o gráfico com as novas informações
         pieChart.setData(pieData);
     }
 
@@ -149,11 +270,13 @@ public void start(Stage primaryStage) {
 
         if (file != null) {
             try (FileWriter writer = new FileWriter(file)) {
-                writer.append("SID,Serial,Usuário,Status,Máquina\n");
+                writer.append("SID,SQL_ID,Schema,Usuário,Modulo,Status,Máquina,DuracaoConsult,Comando\n");
                 for (Sessao sessao : tableView.getItems()) {
-                    writer.append(sessao.getSid() + "," + sessao.getSerial() + ","
-                            + sessao.getUsername() + "," + sessao.getStatus() + ","
-                            + sessao.getMachine() + "\n");
+                    writer.append(sessao.getSid() + "," + sessao.getSql_id() + ","
+                            + sessao.getUsername() + "," + sessao.getOsuser() + "," 
+                            + sessao.getProgram() + "," + sessao.getStatus() + ","
+                            + sessao.getMachine() + "," + sessao.getSeconds_in_wait() + ","
+                            + sessao.getSql_text() + "\n");
                 }
                 writer.flush();
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);

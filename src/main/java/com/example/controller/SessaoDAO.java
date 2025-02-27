@@ -3,6 +3,7 @@ package com.example.controller;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,31 +17,84 @@ public class SessaoDAO {
     // Método para buscar as sessões com filtro de usuário
     public ObservableList<Sessao> buscarSessoes(String filtro) {
         ObservableList<Sessao> sessoes = FXCollections.observableArrayList();
-        String sql = "SELECT SID, SERIAL#, USERNAME, STATUS, MACHINE FROM V$SESSION";
-        
-        // Adiciona filtro de usuário, se fornecido
+        String sql = "SELECT S.SID, S.SQL_ID, S.USERNAME, S.OSUSER, S.PROGRAM, S.STATUS, S.MACHINE, S.SECONDS_IN_WAIT, Q.SQL_TEXT "+
+        "FROM V$SESSION S JOIN V$SQL Q ON S.SQL_ID = Q.SQL_ID WHERE USERNAME IS NOT NULL";
+    
         if (filtro != null && !filtro.isEmpty()) {
-            sql += " WHERE LOWER(USERNAME) LIKE LOWER(?)";
+            sql += " AND LOWER(S.OSUSER) LIKE LOWER(?)";
         }
-
+    
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             if (filtro != null && !filtro.isEmpty()) {
                 stmt.setString(1, "%" + filtro + "%");
             }
             ResultSet rs = stmt.executeQuery();
+    
             while (rs.next()) {
-                sessoes.add(new Sessao(
-                        rs.getInt("SID"),
-                        rs.getInt("SERIAL#"),
-                        rs.getString("USERNAME"),
-                        rs.getString("STATUS"),
-                        rs.getString("MACHINE")
-                ));
+                Sessao sessao = new Sessao(
+                    rs.getInt("SID"),
+                    rs.getString("SQL_ID"),
+                    rs.getString("USERNAME"),
+                    rs.getString("OSUSER"),
+                    rs.getString("PROGRAM"),
+                    rs.getString("STATUS"),
+                    rs.getString("MACHINE"),
+                    rs.getInt("SECONDS_IN_WAIT"),
+                    rs.getString("SQL_TEXT")
+                      // Usa a versão convertida de SQL_TEXT
+                );
+                sessoes.add(sessao);
             }
+    
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    
         return sessoes;
+    }
+
+     // Método para buscar sessões bloqueadas
+     public ObservableList<Sessao> buscarSessoesBloqueadas() {
+        ObservableList<Sessao> sessoesBloqueadas = FXCollections.observableArrayList();
+        String sql = "SELECT SID, SQL_ID, STATUS, USERNAME, OSUSER, PROGRAM, BLOCKING_SESSION, EVENT, SECONDS_IN_WAIT " +
+                     "FROM GV$SESSION WHERE BLOCKING_SESSION IS NOT NULL";
+    
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+    
+            while (rs.next()) {
+                Sessao sessao = new Sessao(
+                    rs.getInt("SID"),
+                    rs.getString("SQL_ID"),
+                    rs.getString("USERNAME"),
+                    rs.getString("OSUSER"),
+                    rs.getString("PROGRAM"),
+                    rs.getString("STATUS"),
+                    rs.getString("BLOCKING_SESSION"),
+                    rs.getString("EVENT"),
+                    rs.getInt("SECONDS_IN_WAIT")
+                );
+                sessoesBloqueadas.add(sessao);
+            }
+    
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    
+        return sessoesBloqueadas;
+    }
+
+    // Método para converter CLOB para String
+    private String clobToString(Clob clob) {
+        if (clob != null) {
+            try {
+                long length = clob.length();
+                return clob.getSubString(1, (int) length);  // Converte o CLOB em String
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return "Desconhecido";
     }
 
     // Método para obter a versão do banco de dados

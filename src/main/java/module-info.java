@@ -5,5 +5,7 @@ module com.example {
     requires java.management;
 
     opens com.example.view to javafx.graphics, javafx.fxml;
-    exports com.example.view;  // <-- Adicione esta linha
+    opens com.example.model to javafx.base; // 🔥 Adicione esta linha para permitir o acesso à classe Sessao
+    
+    exports com.example.view;
 }

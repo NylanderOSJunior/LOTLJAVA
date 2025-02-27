@@ -12,8 +12,18 @@ public class SessaoController {
         return sessaoDAO.buscarSessoes(filtro);
     }
 
+    public ObservableList<Sessao> carregarSessoesblock(String filtro) {
+        return sessaoDAO.buscarSessoesBloqueadas();
+    }
+
     // Método para obter a versão do banco de dados
     public String obterVersaoBanco() {
         return sessaoDAO.getVersaoBanco();
     }
+
+    // Método para desconectar do Oracle
+    public String Desonecao() {
+        return sessaoDAO.getVersaoBanco();
+    }
+    
 }

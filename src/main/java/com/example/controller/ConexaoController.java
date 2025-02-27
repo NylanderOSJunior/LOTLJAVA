@@ -28,4 +28,15 @@ public class ConexaoController {
     public static Connection getConnection() {
         return connection;
     }
+
+    public void desconectar() {
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+                System.out.println("Sessão do Oracle encerrada com sucesso.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Erro ao fechar a sessão do Oracle: " + e.getMessage());
+        }
+    }
 }
