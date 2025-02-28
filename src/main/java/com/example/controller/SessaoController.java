@@ -21,6 +21,11 @@ public class SessaoController {
         return sessaoDAO.getVersaoBanco();
     }
 
+    // Método para obter a quantidade de CPUs configuradas para o banco de dados
+    public int obterCPUBanco() {
+        return sessaoDAO.getCPUBanco();
+    }
+
     // Método para desconectar do Oracle
     public String Desonecao() {
         return sessaoDAO.getVersaoBanco();

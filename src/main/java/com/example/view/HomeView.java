@@ -30,10 +30,10 @@ public class HomeView extends Application {
         btnConectar.getStyleClass().add("button");
         btnFuncionalidades.getStyleClass().add("button");
         btnInfra.getStyleClass().add("button");
-
+        
 
         btnConectar.setOnAction(e -> carregarTela(new ConexaoView(), primaryStage));
-        btnFuncionalidades.setOnAction(e -> carregarTela(new FuncionalidadesView(), primaryStage));
+        btnFuncionalidades.setOnAction(e -> contentArea.getChildren().setAll(new FuncionalidadesView().criarTela(contentArea)));
         //btnInfra.setOnAction(e -> carregarTela(new InfraestruturaView(), primaryStage));
         btnInfra.setOnAction(e -> contentArea.getChildren().setAll(new InfraestruturaView().criarTela(contentArea)));
         menuLateral.getChildren().addAll( btnConectar, btnFuncionalidades, btnInfra);

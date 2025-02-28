@@ -18,7 +18,7 @@ public class SessaoDAO {
     public ObservableList<Sessao> buscarSessoes(String filtro) {
         ObservableList<Sessao> sessoes = FXCollections.observableArrayList();
         String sql = "SELECT S.SID, S.SQL_ID, S.USERNAME, S.OSUSER, S.PROGRAM, S.STATUS, S.MACHINE, S.SECONDS_IN_WAIT, Q.SQL_TEXT "+
-        "FROM V$SESSION S JOIN V$SQL Q ON S.SQL_ID = Q.SQL_ID WHERE USERNAME IS NOT NULL";
+        "FROM V$SESSION S LEFT JOIN V$SQL Q ON S.SQL_ID = Q.SQL_ID WHERE USERNAME IS NOT NULL";
     
         if (filtro != null && !filtro.isEmpty()) {
             sql += " AND LOWER(S.OSUSER) LIKE LOWER(?)";
@@ -111,5 +111,21 @@ public class SessaoDAO {
             e.printStackTrace();
         }
         return versao;
+    }
+
+    // Método para obter quantidade de CPUs alocadas ao banco de dados
+    public int getCPUBanco() {
+        int cpu=0;
+        String sql = "SELECT VALUE FROM V$PARAMETER WHERE UPPER(NAME)= 'CPU_COUNT'";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                cpu = rs.getInt("VALUE");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return cpu;
     }
 }

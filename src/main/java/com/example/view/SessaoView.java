@@ -138,10 +138,15 @@ public void start(Stage primaryStage) {
 
     // Label para exibir a versão do banco
     Label versaoLabel = new Label("Versão do Banco: Carregando...");
-
     // Chamar o método para obter a versão do banco e exibir
     String versaoBanco = controller.obterVersaoBanco();
     versaoLabel.setText("Versão do Banco: " + versaoBanco);
+
+    // Label para exibir a CPUs do banco
+    Label cpuLabel = new Label("Quantidade de CPUS Alocadas ao Banco: Carregando...");
+    // Chamar o método para obter as CPUs do banco e exibir
+    int cpuBanco = controller.obterCPUBanco();
+    cpuLabel.setText("CPU Alocadas ao Banco: " + cpuBanco);
 
     // Campo de busca
     searchField.setPromptText("Filtrar por usuário...");
@@ -163,11 +168,11 @@ public void start(Stage primaryStage) {
         searchBox2.setAlignment(Pos.CENTER_LEFT);
 
     // Melhorias na interface
-    VBox vbox = new VBox(searchBox, labelMonitoramento, tableView, labelLock, tableBlock, pieChart, versaoLabel, searchBox2); // Adiciona o Label de versão
+    VBox vbox = new VBox(searchBox, labelMonitoramento, tableView, labelLock, tableBlock, pieChart, versaoLabel, cpuLabel, searchBox2); // Adiciona o Label de versão
     vbox.setSpacing(10);
     vbox.getStyleClass().add("main-container");
 
-    Scene scene = new Scene(vbox, 800, 500);
+    Scene scene = new Scene(vbox, 800, 600);
     scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
     primaryStage.setScene(scene);
     primaryStage.setTitle("Monitoramento de Sessões");
