@@ -155,8 +155,6 @@ public void start(Stage primaryStage) {
     // Botão de exportação
     exportButton.setOnAction(e -> exportarParaCSV());
 
-    //botão de voltar 
-    btnVoltarcon.setOnAction(e -> voltarParaConecOra(primaryStage));
 
     //botão de voltar para a Home
     btnVoltar.setOnAction(e -> voltarParaHome(primaryStage));
@@ -224,12 +222,7 @@ public void start(Stage primaryStage) {
         new HomeView().start(primaryStage);
     }
 
-    private void voltarParaConecOra(Stage primaryStage) {
-        //Desconectar sessão
-        controllercon.desconectar();
-        // Carregar a tela Conexao
-        new ConexaoView().start(primaryStage);
-    }
+    
     
 
     private void atualizarGrafico() {
