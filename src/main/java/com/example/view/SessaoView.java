@@ -148,6 +148,12 @@ public void start(Stage primaryStage) {
     int cpuBanco = controller.obterCPUBanco();
     cpuLabel.setText("CPU Alocadas ao Banco: " + cpuBanco);
 
+    // Label para exibir a CPUs do banco
+    Label consumoLabel = new Label("Procentagem de CPU consumida no Banco: Carregando...");
+    // Chamar o método para obter as CPUs do banco e exibir
+    String consumoBanco = controller.obterConsumoBanco();
+    consumoLabel.setText("Consumo de CPU no banco de dados: " + consumoBanco+"%");
+
     // Campo de busca
     searchField.setPromptText("Filtrar por usuário...");
     searchField.setOnKeyReleased(event -> atualizarTabela());
@@ -169,7 +175,7 @@ public void start(Stage primaryStage) {
         searchBox2.setAlignment(Pos.CENTER_LEFT);
 
     // Melhorias na interface
-    VBox vbox = new VBox(searchBox, labelMonitoramento, tableView, labelLock, tableBlock, pieChart, versaoLabel, cpuLabel, searchBox2); // Adiciona o Label de versão
+    VBox vbox = new VBox(searchBox, labelMonitoramento, tableView, labelLock, tableBlock, pieChart, versaoLabel, cpuLabel, consumoLabel, searchBox2); // Adiciona o Label de versão
     vbox.setSpacing(10);
     vbox.getStyleClass().add("main-container");
 

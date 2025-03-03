@@ -137,6 +137,24 @@ public class SessaoDAO {
         return versao;
     }
 
+        // Método para obter o consumo de CPU do banco de dados
+        public String getConsumoCPU() {
+            String consumo = "Desconhecida";
+            String sql = "SELECT ROUND((CPU.VALUE / TIME.VALUE) * 100, 2) AS CPU_USAGE_PERCENTAGE "+
+                            "FROM (SELECT VALUE FROM V$SYS_TIME_MODEL WHERE STAT_NAME = 'DB CPU') CPU,"+
+                            "(SELECT VALUE FROM V$SYS_TIME_MODEL WHERE STAT_NAME = 'DB time') TIME";
+            
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    consumo = rs.getString("CPU_USAGE_PERCENTAGE");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return consumo;
+        }
+
     // Método para obter quantidade de CPUs alocadas ao banco de dados
     public int getCPUBanco() {
         int cpu=0;
@@ -153,3 +171,11 @@ public class SessaoDAO {
         return cpu;
     }
 }
+/* Para Implementar
+SELECT min(last_analyzed) FROM dba_tables WHERE owner = 'BL21'; -- estatistica de tabela antiga
+SELECT min(last_analyzed)FROM dba_indexes WHERE owner = 'BL21'; -- estatistica de indice antiga
+SELECT TABLESPACE_NAME, FILE_NAME, BYTES/1024/1024 AS TAMANHO_MB FROM DBA_DATA_FILES; --Consumo de tablespace
+SELECT TABLESPACE_NAME, FREE_SPACE FROM DBA_FREE_SPACE; --Espaço livre 
+SELECT USERNAME, ACCOUNT_STATUS, CREATED FROM DBA_USERS; -- User Criado e liberado.
+SELECT OWNER,JOB_NAME, STATE, LAST_START_DATE, NEXT_RUN_DATE FROM DBA_SCHEDULER_JOBS; --Jobs Criadas
+ */

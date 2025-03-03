@@ -25,6 +25,11 @@ public class SessaoController {
         return sessaoDAO.getVersaoBanco();
     }
 
+    // Método para obter o consumo de CPU do banco de dados
+    public String obterConsumoBanco() {
+        return sessaoDAO.getConsumoCPU();
+    }
+
     // Método para obter a quantidade de CPUs configuradas para o banco de dados
     public int obterCPUBanco() {
         return sessaoDAO.getCPUBanco();
