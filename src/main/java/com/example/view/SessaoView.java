@@ -159,6 +159,9 @@ public void start(Stage primaryStage) {
     //botão de voltar para a Home
     btnVoltar.setOnAction(e -> voltarParaHome(primaryStage));
 
+    //botão de voltar para a Tela conexões
+    btnVoltarcon.setOnAction(e -> voltarParaCon(primaryStage));
+
     HBox searchBox = new HBox(10, searchField, spinnerTempo, btnAplicarTempo);
         searchBox.setAlignment(Pos.CENTER_LEFT);
     
@@ -220,6 +223,13 @@ public void start(Stage primaryStage) {
         controllercon.desconectar();
         // Carregar a tela home
         new HomeView().start(primaryStage);
+    }
+
+    private void voltarParaCon(Stage primaryStage) {
+        //Desconectar sessão
+        controllercon.desconectar();
+        // Carregar a tela home
+        new ConexaoView().start(primaryStage);
     }
 
     
