@@ -83,6 +83,31 @@ public class SessaoDAO {
         return sessoesBloqueadas;
     }
 
+        // Método para buscar sessões bloqueadas
+        public ObservableList<Sessao> execucaoBanco() {
+            ObservableList<Sessao> execucaoBanco = FXCollections.observableArrayList();
+            String sql = "SELECT TO_CHAR(STARTUP_TIME, 'DD/MM/YYYY HH24:MI:SS') AS STARTUP_TIME,"+
+            " ROUND((SYSDATE - STARTUP_TIME) * 24, 2) AS HOURS_UP, ROUND(SYSDATE - STARTUP_TIME, 2) AS DAYS_UP FROM V$INSTANCE";
+        
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                ResultSet rs = stmt.executeQuery();
+        
+                while (rs.next()) {
+                    Sessao sessao = new Sessao(
+                        rs.getString("STARTUP_TIME"),
+                        rs.getString("HOURS_UP"),
+                        rs.getString("DAYS_UP")
+                    );
+                    execucaoBanco.add(sessao);
+                }
+        
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        
+            return execucaoBanco;
+        }
+
     /* Método para converter CLOB para String
     private String clobToString(Clob clob) {
         if (clob != null) {

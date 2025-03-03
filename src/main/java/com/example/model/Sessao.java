@@ -10,8 +10,11 @@ public class Sessao {
     private String machine;
     private int seconds_in_wait;
     private String sql_text;
-    private String blocking_session;  // Novo campo
-    private String event;             // Novo campo
+    private String blocking_session;  
+    private String event; 
+    private String startup_time;
+    private String hours_up;
+    private String days_up;             
 
     // Constructor para sessões normais
     public Sessao(int sid, String sql_id, String username, String osuser, String program, String status, String machine, int seconds_in_wait, String sql_text) {
@@ -26,6 +29,8 @@ public class Sessao {
         this.sql_text = sql_text != null ? sql_text : "Desconhecido";
     }
 
+    
+    
     // Constructor para sessões bloqueadas
     public Sessao(int sid, String sql_id, String username, String osuser, String program, String status, String blocking_session, String event, int seconds_in_wait) {
         this.sid = sid;
@@ -37,6 +42,14 @@ public class Sessao {
         this.blocking_session = blocking_session != null ? blocking_session : "Desconhecido";
         this.event = event != null ? event : "Desconhecido";
         this.seconds_in_wait = seconds_in_wait;
+    }
+
+    // Constructor para tempo de execução do banco
+    public Sessao( String startup_time, String hours_up, String days_up) {
+        this.startup_time = startup_time != null ? startup_time : "Desconhecido";
+        this.hours_up = hours_up != null ? hours_up : "Desconhecido";
+        this.days_up = days_up != null ? days_up : "Desconhecido";
+        
     }
 
     // Getters e Setters
@@ -51,4 +64,7 @@ public class Sessao {
     public String getSql_text() { return sql_text; }
     public String getBlocking_session() { return blocking_session; }
     public String getEvent() { return event; }
+    public String getStartup_time() { return startup_time; }
+    public String getHours_up() { return hours_up; }
+    public String getDays_up() { return days_up; }
 }

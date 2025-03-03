@@ -16,6 +16,10 @@ public class SessaoController {
         return sessaoDAO.buscarSessoesBloqueadas();
     }
 
+    public ObservableList<Sessao> tempoExecucaoBanco() {
+        return sessaoDAO.execucaoBanco();
+    }
+
     // Método para obter a versão do banco de dados
     public String obterVersaoBanco() {
         return sessaoDAO.getVersaoBanco();
