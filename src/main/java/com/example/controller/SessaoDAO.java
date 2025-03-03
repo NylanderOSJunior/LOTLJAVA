@@ -3,7 +3,6 @@ package com.example.controller;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -84,7 +83,7 @@ public class SessaoDAO {
         return sessoesBloqueadas;
     }
 
-    // Método para converter CLOB para String
+    /* Método para converter CLOB para String
     private String clobToString(Clob clob) {
         if (clob != null) {
             try {
@@ -95,7 +94,7 @@ public class SessaoDAO {
             }
         }
         return "Desconhecido";
-    }
+    }*/
 
     // Método para obter a versão do banco de dados
     public String getVersaoBanco() {
