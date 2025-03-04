@@ -71,7 +71,7 @@ public class SessaoDAO {
         ObservableList<Sessao> sessoes = FXCollections.observableArrayList();
         String sql = "SELECT S.SID, NVL(S.SQL_ID, 'N/A') AS SQL_ID, S.USERNAME, S.OSUSER, S.PROGRAM, S.STATUS, S.MACHINE, " +
                      "CASE WHEN S.STATUS = 'INACTIVE' AND S.SQL_ID IS NULL THEN 0 ELSE S.SECONDS_IN_WAIT END AS SECONDS_IN_WAIT, " +
-                     "Q.SQL_TEXT FROM V$SESSION S LEFT JOIN V$SQL Q ON S.SQL_ID = Q.SQL_ID WHERE S.USERNAME IS NOT NULL";
+                     "Q.SQL_TEXT FROM V$SESSION S LEFT JOIN V$SQL Q ON S.SQL_ID = Q.SQL_ID WHERE S.USERNAME IS NOT NULL ORDER BY SECONDS_IN_WAIT DESC";
     
         if (filtro != null && !filtro.isEmpty()) {
             sql += " AND LOWER(S.OSUSER) LIKE LOWER(?)";
