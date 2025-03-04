@@ -13,11 +13,65 @@ import com.example.model.Sessao;
 public class SessaoDAO {
     private Connection connection = ConexaoController.getConnection();
 
+    // Método para obter o schema do banco conectado
+    private String getCurrentSchema() {
+        String schema = "";
+        String sql = "SELECT SYS_CONTEXT('USERENV', 'CURRENT_SCHEMA') AS SCHEMA FROM DUAL";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                schema = rs.getString("SCHEMA");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return schema;
+    }
+
+    // Método para obter a menor data de análise das tabelas do schema conectado
+    public String getMinLastAnalyzedTables() {
+        String schema = getCurrentSchema();
+        String minLastAnalyzed = "Desconhecido";
+        String sql = "SELECT MIN(last_analyzed) AS min_analyzed FROM dba_tables WHERE owner = ?";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, schema);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                minLastAnalyzed = rs.getString("min_analyzed");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return minLastAnalyzed;
+    }
+
+    // Método para obter a menor data de análise dos índices do schema conectado
+    public String getMinLastAnalyzedIndexes() {
+        String schema = getCurrentSchema();
+        String minLastAnalyzed = "Desconhecido";
+        String sql = "SELECT MIN(last_analyzed) AS min_analyzed FROM dba_indexes WHERE owner = ?";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, schema);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                minLastAnalyzed = rs.getString("min_analyzed");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return minLastAnalyzed;
+    }
+
+
     // Método para buscar as sessões com filtro de usuário
     public ObservableList<Sessao> buscarSessoes(String filtro) {
         ObservableList<Sessao> sessoes = FXCollections.observableArrayList();
-        String sql = "SELECT S.SID, S.SQL_ID, S.USERNAME, S.OSUSER, S.PROGRAM, S.STATUS, S.MACHINE, S.SECONDS_IN_WAIT, Q.SQL_TEXT "+
-        "FROM V$SESSION S LEFT JOIN V$SQL Q ON S.SQL_ID = Q.SQL_ID WHERE USERNAME IS NOT NULL";
+        String sql = "SELECT S.SID, NVL(S.SQL_ID, 'N/A') AS SQL_ID, S.USERNAME, S.OSUSER, S.PROGRAM, S.STATUS, S.MACHINE, " +
+                     "CASE WHEN S.STATUS = 'INACTIVE' AND S.SQL_ID IS NULL THEN 0 ELSE S.SECONDS_IN_WAIT END AS SECONDS_IN_WAIT, " +
+                     "Q.SQL_TEXT FROM V$SESSION S LEFT JOIN V$SQL Q ON S.SQL_ID = Q.SQL_ID WHERE S.USERNAME IS NOT NULL";
     
         if (filtro != null && !filtro.isEmpty()) {
             sql += " AND LOWER(S.OSUSER) LIKE LOWER(?)";
@@ -38,9 +92,8 @@ public class SessaoDAO {
                     rs.getString("PROGRAM"),
                     rs.getString("STATUS"),
                     rs.getString("MACHINE"),
-                    rs.getInt("SECONDS_IN_WAIT"),
+                    rs.getInt("SECONDS_IN_WAIT"), // Tratado no SQL para ser 0 quando inativa e sem consulta
                     rs.getString("SQL_TEXT")
-                      // Usa a versão convertida de SQL_TEXT
                 );
                 sessoes.add(sessao);
             }
@@ -51,6 +104,7 @@ public class SessaoDAO {
     
         return sessoes;
     }
+    
 
      // Método para buscar sessões bloqueadas
      public ObservableList<Sessao> buscarSessoesBloqueadas() {
@@ -170,10 +224,10 @@ public class SessaoDAO {
         }
         return cpu;
     }
+
+    
 }
 /* Para Implementar
-SELECT min(last_analyzed) FROM dba_tables WHERE owner = 'BL21'; -- estatistica de tabela antiga
-SELECT min(last_analyzed)FROM dba_indexes WHERE owner = 'BL21'; -- estatistica de indice antiga
 SELECT TABLESPACE_NAME, FILE_NAME, BYTES/1024/1024 AS TAMANHO_MB FROM DBA_DATA_FILES; --Consumo de tablespace
 SELECT TABLESPACE_NAME, FREE_SPACE FROM DBA_FREE_SPACE; --Espaço livre 
 SELECT USERNAME, ACCOUNT_STATUS, CREATED FROM DBA_USERS; -- User Criado e liberado.

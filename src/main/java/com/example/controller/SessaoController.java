@@ -12,10 +12,12 @@ public class SessaoController {
         return sessaoDAO.buscarSessoes(filtro);
     }
 
+    // Método para obter as sessões com lock no banco de dados
     public ObservableList<Sessao> carregarSessoesblock(String filtro) {
         return sessaoDAO.buscarSessoesBloqueadas();
     }
 
+    // Método para obter o tempo de atividade do banco de dados
     public ObservableList<Sessao> tempoExecucaoBanco() {
         return sessaoDAO.execucaoBanco();
     }
@@ -38,6 +40,16 @@ public class SessaoController {
     // Método para desconectar do Oracle
     public String Desonecao() {
         return sessaoDAO.getVersaoBanco();
+    }
+
+    // Método para obter a menor data de análise das tabelas do schema conectado
+    public String MinLastAnalyzedTables() {
+        return sessaoDAO.getMinLastAnalyzedTables();
+    }
+
+    // Método para obter a menor data de análise dos índices do schema conectado
+    public String MinLastAnalyzedIndexes() {
+        return sessaoDAO.getMinLastAnalyzedIndexes();
     }
     
 }

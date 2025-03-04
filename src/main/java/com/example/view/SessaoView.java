@@ -36,6 +36,8 @@ public class SessaoView extends Application {
     private Button btnVoltarcon = new Button("Voltar");
     private Button btnVoltar = new Button("Voltar para Home");
     private Button btnAplicarTempo = new Button("Aplicar Tempo");
+    private Button btnAuditoria = new Button("Auditoria Oracle");
+    private Label tempoAtividadeLabel;
 
     // Spinner e botão para ajustar o intervalo de recarregamento
     private Spinner<Integer> spinnerTempo = new Spinner<>(5, 60, 5); // Intervalo entre 5 e 60 segundos
@@ -154,6 +156,28 @@ public void start(Stage primaryStage) {
     String consumoBanco = controller.obterConsumoBanco();
     consumoLabel.setText("Consumo de CPU no banco de dados: " + consumoBanco+"%");
 
+    // Label para exibir estatitiscas da tabela
+    Label estatisticatabLabel = new Label("Carregando data de estatística de tabelas de banco: Carregando...");
+    // Chamar o método para obter data de estetistica de tabela mais antiga
+    String estatisticatabBanco = controller.MinLastAnalyzedTables();
+    estatisticatabLabel.setText("Data da estatística de tabelas mais destualizada ativa: " + estatisticatabBanco);
+
+    // Label para exibir estatitiscas de indices
+    Label estatisticaindLabel = new Label("Carregando data de estatística de indices de banco: Carregando...");
+    // Chamar o método para obter data de estetistica de tabela mais antiga
+    String estatisticaindBanco = controller.MinLastAnalyzedIndexes();
+    estatisticaindLabel.setText("Data da estatística de indices mais destualizada ativa: " + estatisticaindBanco);
+
+    // Label para exibir o tempo de atividade do banco
+    Label tempoAtividadeLabel = new Label("Tempo de Atividade do Banco: Carregando...");
+
+    // Método para obter e atualizar o tempo de atividade
+    atualizarTempoAtividade(tempoAtividadeLabel);
+    
+
+    // Botão para chamar tela auditoria
+    btnAuditoria.setOnAction(e -> abrirTelaAuditoria());
+
     // Campo de busca
     searchField.setPromptText("Filtrar por usuário...");
     searchField.setOnKeyReleased(event -> atualizarTabela());
@@ -168,18 +192,21 @@ public void start(Stage primaryStage) {
     //botão de voltar para a Tela conexões
     btnVoltarcon.setOnAction(e -> voltarParaCon(primaryStage));
 
-    HBox searchBox = new HBox(10, searchField, spinnerTempo, btnAplicarTempo);
-        searchBox.setAlignment(Pos.CENTER_LEFT);
+    HBox searchBox = new HBox(10, searchField, spinnerTempo, btnAplicarTempo, btnAuditoria);
+    searchBox.setAlignment(Pos.CENTER_LEFT);
     
-        HBox searchBox2 = new HBox(10, exportButton, btnVoltarcon, btnVoltar);
-        searchBox2.setAlignment(Pos.CENTER_LEFT);
+    HBox searchBox2 = new HBox(10, exportButton, btnVoltarcon, btnVoltar);
+    searchBox2.setAlignment(Pos.CENTER_LEFT);
+
+    HBox searchBox3 = new HBox(10, labelMonitoramento, tempoAtividadeLabel);
+    searchBox3.setAlignment(Pos.CENTER_LEFT);
 
     // Melhorias na interface
-    VBox vbox = new VBox(searchBox, labelMonitoramento, tableView, labelLock, tableBlock, pieChart, versaoLabel, cpuLabel, consumoLabel, searchBox2); // Adiciona o Label de versão
+    VBox vbox = new VBox(searchBox, searchBox3, tableView, labelLock, tableBlock, pieChart, versaoLabel, estatisticatabLabel, estatisticaindLabel, cpuLabel, consumoLabel, searchBox2); // Adiciona o Label de versão
     vbox.setSpacing(10);
     vbox.getStyleClass().add("main-container");
 
-    Scene scene = new Scene(vbox, 800, 600);
+    Scene scene = new Scene(vbox, 850, 650);
     scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
     primaryStage.setScene(scene);
     primaryStage.setTitle("Monitoramento de Sessões");
@@ -187,6 +214,12 @@ public void start(Stage primaryStage) {
 
     atualizarTabela();
 }
+
+private void abrirTelaAuditoria() {
+    Stage stage = new Stage();
+    new AuditoriaView().start(stage);
+}
+
 
     private void aplicarTempoRecarregamento() {
         // Pega o tempo selecionado no spinner
@@ -203,21 +236,45 @@ public void start(Stage primaryStage) {
         timeline.play();  // Inicia o novo timeline
     }
 
+    private void atualizarTempoAtividade(Label tempoAtividadeLabel) {
+        new Thread(() -> {
+            ObservableList<Sessao> dadosBanco = controller.tempoExecucaoBanco();
+            
+            if (!dadosBanco.isEmpty()) {
+                Sessao sessao = dadosBanco.get(0);
+                String startupTime = sessao.getStartup_time();
+                String hoursUp = sessao.getHours_up();
+                String daysUp = sessao.getDays_up();
+
+                javafx.application.Platform.runLater(() -> {
+                    tempoAtividadeLabel.setText("Banco Ativo desde: " + startupTime + 
+                        " | Horas Ativo: " + hoursUp + "h" + 
+                        " | Dias Ativo: " + daysUp + "d");
+                });
+            }
+        }).start();
+    }
+
+
     private void atualizarTabela() {
         new Thread(() -> {
             ObservableList<Sessao> sessoes = controller.carregarSessoes(searchField.getText());
             ObservableList<Sessao> sessoesblock = controller.carregarSessoesblock(searchField.getText());
-
+    
             javafx.application.Platform.runLater(() -> {
-                tableView.getItems().clear(); // Certifica-se de limpar antes de atualizar
-                tableBlock.getItems().clear(); // Certifica-se de limpar antes de atualizar
-                tableView.setItems(FXCollections.observableArrayList(sessoes)); // Garante que a UI é atualizada
-                tableBlock.setItems(FXCollections.observableArrayList(sessoesblock)); // Garante que a UI é atualizada
+                tableView.getItems().clear();
+                tableBlock.getItems().clear();
+                tableView.setItems(FXCollections.observableArrayList(sessoes));
+                tableBlock.setItems(FXCollections.observableArrayList(sessoesblock));
                 atualizarGrafico();
                 verificarConsumoAlto(sessoes);
+    
+                // Atualiza o tempo de atividade do banco
+                atualizarTempoAtividade(tempoAtividadeLabel);
             });
         }).start();
     }
+    
     private void abrirTelaComandoSQL(String sqlText) {
         ComandoSQLView comandoSQLView = new ComandoSQLView(sqlText);
         Stage stage = new Stage();
