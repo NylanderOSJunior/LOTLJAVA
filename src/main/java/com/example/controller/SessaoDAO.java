@@ -137,7 +137,7 @@ public class SessaoDAO {
         return sessoesBloqueadas;
     }
 
-        // Método para buscar sessões bloqueadas
+        // Método para buscar tempo de atividade do banco de dados.
         public ObservableList<Sessao> execucaoBanco() {
             ObservableList<Sessao> execucaoBanco = FXCollections.observableArrayList();
             String sql = "SELECT TO_CHAR(STARTUP_TIME, 'DD/MM/YYYY HH24:MI:SS') AS STARTUP_TIME,"+
