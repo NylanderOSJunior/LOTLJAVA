@@ -25,7 +25,6 @@ public class InfraestruturaView {
 
         // Botão para gerar PDF
         Button btnGerarPDF = new Button("Exportar como PDF");
-        btnGerarPDF.setOnAction(e -> controller.gerarRelatorioPDF());
 
         // Botão para voltar à Home
         Button btnVoltar = new Button("Voltar para Home");
