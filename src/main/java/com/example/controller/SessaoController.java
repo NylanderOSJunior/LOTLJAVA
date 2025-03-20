@@ -11,6 +11,7 @@ public class SessaoController {
     public ObservableList<Sessao> carregarSessoes(String filtro) {
         return sessaoDAO.buscarSessoes(filtro);
     }
+    
 
     // Método para obter as sessões com lock no banco de dados
     public ObservableList<Sessao> carregarSessoesblock(String filtro) {
@@ -37,11 +38,6 @@ public class SessaoController {
         return sessaoDAO.getCPUBanco();
     }
 
-    // Método para desconectar do Oracle
-    public String Desonecao() {
-        return sessaoDAO.getVersaoBanco();
-    }
-
     // Método para obter a menor data de análise das tabelas do schema conectado
     public String MinLastAnalyzedTables() {
         return sessaoDAO.getMinLastAnalyzedTables();
@@ -50,6 +46,12 @@ public class SessaoController {
     // Método para obter a menor data de análise dos índices do schema conectado
     public String MinLastAnalyzedIndexes() {
         return sessaoDAO.getMinLastAnalyzedIndexes();
+    }
+
+    // Método para encerrar a sessão
+    public boolean encerrarSessao(int sid, int serial) {
+        // Chama o método no DAO para encerrar a sessão com base no SID e SERIAL
+        return sessaoDAO.encerrarSessao(sid, serial);
     }
     
 }

@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import com.example.model.SistemaInfoModel;
+import com.example.utils.GeradorPDF;
 
 public class InfraestruturaController {
 
@@ -17,5 +18,9 @@ public class InfraestruturaController {
                "Nome do Host: " + SistemaInfoModel.getNomeHost() + "\n" +
                "Arquitetura do Processador: " + SistemaInfoModel.getArquiteturaProcessador() + "\n" +
                "Versão do Java: " + SistemaInfoModel.getVersaoJava();
+    }
+
+    public void gerarRelatorioPDF() {
+        GeradorPDF.gerarRelatorio(obterInformacoesSistema());
     }
 }
