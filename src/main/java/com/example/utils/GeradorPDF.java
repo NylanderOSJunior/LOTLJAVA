@@ -17,7 +17,7 @@ public class GeradorPDF {
             PdfDocument pdf = new PdfDocument(writer);
             Document document = new Document(pdf, PageSize.A4);
 
-            document.add(new Paragraph("FORMULÁRIO DE VALIDAÇÃO DA INFRAESTRUTURA")
+            document.add(new Paragraph("FORMULÁRIO DE VALIDAÇÃO DA INFRAESTRUTURA-")
                     .setBold()
                     .setFontSize(16)
                     .setTextAlignment(TextAlignment.CENTER));
