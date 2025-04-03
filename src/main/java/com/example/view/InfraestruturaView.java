@@ -28,7 +28,7 @@ public class InfraestruturaView {
 
         // Botão para voltar à Home
         Button btnVoltar = new Button("Voltar para Home");
-        btnVoltar.setOnAction(e -> contentArea.getChildren().setAll(new Label("Bem-vindo à Home!")));
+        btnVoltar.setOnAction(e -> contentArea.getChildren().setAll(new Label()));
 
         layout.getChildren().addAll(lblTitulo, lblInfo, btnGerarPDF, btnVoltar);
 

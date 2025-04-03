@@ -24,8 +24,8 @@ public class ConexaoView extends Application {
         senhaField.setPromptText("Senha");
 
         // Botões
-        Button conectarButton = criarBotao("Conectar");
-        Button btnVoltar = criarBotao("Voltar para Home");
+        Button conectarButton = new Button("Conectar");
+        Button btnVoltar = new Button("Voltar para Home");
 
         // Status da conexão
         Label statusLabel = new Label();
@@ -48,7 +48,7 @@ public class ConexaoView extends Application {
         });
 
         // Evento do botão Voltar
-        btnVoltar.setOnAction(e -> voltarParaHome(primaryStage));
+        btnVoltar.setOnAction(e -> new HomeView().start(primaryStage));
 
         // Layout em Grid para os campos
         GridPane gridPane = new GridPane();
@@ -85,14 +85,6 @@ public class ConexaoView extends Application {
         return textField;
     }
 
-    // Método para criar botões padronizados
-    private Button criarBotao(String texto) {
-        Button button = new Button(texto);
-        button.getStyleClass().add("button");
-        button.setPrefWidth(200);
-        return button;
-    }
-
     private void abrirSessaoView(Stage primaryStage) {
         try {
             new SessaoView().start(primaryStage);
@@ -100,15 +92,6 @@ public class ConexaoView extends Application {
             e.printStackTrace();
         }
     }
-
-    private void voltarParaHome(Stage primaryStage) {
-        try {
-            new HomeView().start(primaryStage);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public static void main(String[] args) {
         launch(args);
     }

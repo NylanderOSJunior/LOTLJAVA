@@ -81,7 +81,7 @@ public class FuncionalidadesView {
 
         // Botão para voltar à Home
         Button btnVoltar = new Button("Voltar para Home");
-        btnVoltar.setOnAction(e -> contentArea.getChildren().setAll(new Label("Bem-vindo à Home!")));
+        btnVoltar.setOnAction(e -> contentArea.getChildren().setAll());
 
         layout.getChildren().add(btnVoltar);
 

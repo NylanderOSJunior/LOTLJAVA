@@ -82,24 +82,6 @@ public class SessaoView extends Application {
         TableColumn<Sessao, String> colSql_text = new TableColumn<>("Comando SQL");
         colSql_text.setCellValueFactory(new PropertyValueFactory<>("sql_text"));
 
-        TableColumn<Sessao, Integer> colBSid = new TableColumn<>("SID");
-        colBSid.setCellValueFactory(new PropertyValueFactory<>("sid"));
-
-        TableColumn<Sessao, Integer> colBSql_id = new TableColumn<>("SQL_ID");
-        colBSql_id.setCellValueFactory(new PropertyValueFactory<>("sql_id"));
-
-        TableColumn<Sessao, String> colBUsername = new TableColumn<>("Schema");
-        colBUsername.setCellValueFactory(new PropertyValueFactory<>("username"));
-
-        TableColumn<Sessao, String> colBOsuser = new TableColumn<>("Usuário");
-        colBOsuser.setCellValueFactory(new PropertyValueFactory<>("osuser"));
-
-        TableColumn<Sessao, String> colBProgram = new TableColumn<>("Modulo");
-        colBProgram.setCellValueFactory(new PropertyValueFactory<>("program"));
-
-        TableColumn<Sessao, String> colBStatus = new TableColumn<>("Status");
-        colBStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
-
         TableColumn<Sessao, String> colEvent = new TableColumn<>("Evento");
         colEvent.setCellValueFactory(new PropertyValueFactory<>("event"));
 
@@ -107,9 +89,8 @@ public class SessaoView extends Application {
         colBlocking_session.setCellValueFactory(new PropertyValueFactory<>("blocking_session"));
 
         tableView.getColumns().addAll(colSid, colSeria, colSql_id, colUsername, colOsuser, colProgram, colStatus,
-                colMachine,
-                colSeconds_in_wait, colSql_text);
-        tableBlock.getColumns().addAll(colBSid, colBSql_id, colBUsername, colBOsuser, colBProgram, colBStatus, colEvent,
+                colMachine,colSeconds_in_wait, colSql_text);
+        tableBlock.getColumns().addAll(colSid, colSql_id, colUsername, colOsuser, colProgram, colStatus, colEvent,
                 colBlocking_session);
 
         // Labels para os títulos
