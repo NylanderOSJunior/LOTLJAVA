@@ -85,12 +85,31 @@ public class SessaoView extends Application {
         TableColumn<Sessao, String> colEvent = new TableColumn<>("Evento");
         colEvent.setCellValueFactory(new PropertyValueFactory<>("event"));
 
+        TableColumn<Sessao, Integer> colBSid = new TableColumn<>("SID");
+        colBSid.setCellValueFactory(new PropertyValueFactory<>("sid"));
+
+        TableColumn<Sessao, Integer> colBSql_id = new TableColumn<>("SQL_ID");
+        colBSql_id.setCellValueFactory(new PropertyValueFactory<>("sql_id"));
+
+        TableColumn<Sessao, String> colBUsername = new TableColumn<>("Schema");
+        colBUsername.setCellValueFactory(new PropertyValueFactory<>("username"));
+
+        TableColumn<Sessao, String> colBOsuser = new TableColumn<>("Usuário");
+        colBOsuser.setCellValueFactory(new PropertyValueFactory<>("osuser"));
+
+        TableColumn<Sessao, String> colBProgram = new TableColumn<>("Modulo");
+        colBProgram.setCellValueFactory(new PropertyValueFactory<>("program"));
+
+        TableColumn<Sessao, String> colBStatus = new TableColumn<>("Status");
+        colBStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
+
+
         TableColumn<Sessao, String> colBlocking_session = new TableColumn<>("SessaoDoLock");
         colBlocking_session.setCellValueFactory(new PropertyValueFactory<>("blocking_session"));
 
         tableView.getColumns().addAll(colSid, colSeria, colSql_id, colUsername, colOsuser, colProgram, colStatus,
                 colMachine,colSeconds_in_wait, colSql_text);
-        tableBlock.getColumns().addAll(colSid, colSql_id, colUsername, colOsuser, colProgram, colStatus, colEvent,
+        tableBlock.getColumns().addAll(colBSid, colBSql_id, colBUsername, colBOsuser, colBProgram, colBStatus, colEvent,
                 colBlocking_session);
 
         // Labels para os títulos
