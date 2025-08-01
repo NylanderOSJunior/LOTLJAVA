@@ -192,6 +192,7 @@ public class SessaoView extends Application {
         searchField.setPromptText("Filtrar por usuário...");
         searchField.setOnKeyReleased(event -> atualizarTabela());
 
+
         // Botão de exportação
         exportButton.setOnAction(e -> exportarParaCSV());
 
@@ -273,7 +274,7 @@ public class SessaoView extends Application {
     private void atualizarTabela() {
         new Thread(() -> {
             ObservableList<Sessao> sessoes = controller.carregarSessoes(searchField.getText());
-            ObservableList<Sessao> sessoesblock = controller.carregarSessoesblock(searchField.getText());
+            ObservableList<Sessao> sessoesblock = controller.carregarSessoesblock();
 
             javafx.application.Platform.runLater(() -> {
                 tableView.getItems().clear();

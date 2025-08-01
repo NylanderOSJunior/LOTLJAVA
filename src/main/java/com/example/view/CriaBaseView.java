@@ -1,6 +1,6 @@
 package com.example.view;
 
-import com.example.controller.FuncionalidadesController;
+import com.example.controller.CriaBaseController;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -9,33 +9,35 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 
-public class FuncionalidadesView {
-    private FuncionalidadesController controller = new FuncionalidadesController();
+public class CriaBaseView {
+    private CriaBaseController controller = new CriaBaseController();
 
     public Region criarTela(StackPane contentArea) {
         VBox layout = new VBox(10);
         layout.setPadding(new Insets(20));
         layout.setAlignment(Pos.CENTER);
 
-        Label lblTitulo = new Label("Funcionalidades do Sistema");
+        Label lblTitulo = new Label("Funções Cria Base");
         lblTitulo.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
 
-        Button btnAjusteFirewall = new Button("Ajustar Firewall");
-        Button btnCriarBackup = new Button("Criar Backup");
+        Button btnGerarBackup = new Button("Gerar Backup");
+        Button btnCriarBasezero = new Button("Base Implantação");
+        Button btnCriarBase = new Button("Criar Nova Base");
+
 
         HBox buttonsBox = new HBox(10);
         buttonsBox.setAlignment(Pos.CENTER);
-        buttonsBox.getChildren().addAll(btnAjusteFirewall, btnCriarBackup);
+        buttonsBox.getChildren().addAll(btnGerarBackup, btnCriarBasezero, btnCriarBase);
 
         // 🔥 Campos para Ajuste de Firewall
-        VBox ajusteFirewallBox = new VBox(5);
+        VBox btnCriarBasezeroBox = new VBox(5);
         Label lblNomePorta = new Label("Nome da Porta:");
         TextField txtNomePorta = new TextField();
         Label lblPorta = new Label("Porta para liberar:");
         TextField txtPorta = new TextField();
         Button btnConfirmarFirewall = new Button("Liberar Porta");
 
-        ajusteFirewallBox.getChildren().addAll(lblNomePorta, txtNomePorta, lblPorta, txtPorta, btnConfirmarFirewall);
+        btnCriarBasezeroBox.getChildren().addAll(lblNomePorta, txtNomePorta, lblPorta, txtPorta, btnConfirmarFirewall);
 
         // 🔥 Campos para Criar Backup
         VBox criarBackupBox = new VBox(5);
@@ -56,21 +58,6 @@ public class FuncionalidadesView {
         criarBackupBox.getChildren().addAll(lblSchema, txtSchema, lblService, txtService, lblDiretorio, txtDiretorio, btnSelecionarDiretorio, lblDiretoriobk, txtDiretoriobk, btnSelecionarDiretorioBackup, btnConfirmarBackup);
 
         layout.getChildren().addAll(lblTitulo, buttonsBox);
-
-        //  Vinculando ações dos botões
-        btnAjusteFirewall.setOnAction(e -> {
-            if (!layout.getChildren().contains(ajusteFirewallBox)) {
-                layout.getChildren().add(ajusteFirewallBox);
-            }
-            layout.getChildren().remove(criarBackupBox);
-        });
-
-        btnCriarBackup.setOnAction(e -> {
-            if (!layout.getChildren().contains(criarBackupBox)) {
-                layout.getChildren().add(criarBackupBox);
-            }
-            layout.getChildren().remove(ajusteFirewallBox);
-        });
 
         btnConfirmarFirewall.setOnAction(e -> controller.ajustarFirewall(txtNomePorta, txtPorta));
         btnConfirmarBackup.setOnAction(e -> controller.criarBackup(txtSchema, txtService, txtDiretoriobk, txtDiretorio));

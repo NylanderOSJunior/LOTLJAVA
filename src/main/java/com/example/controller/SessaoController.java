@@ -14,7 +14,7 @@ public class SessaoController {
     
 
     // Método para obter as sessões com lock no banco de dados
-    public ObservableList<Sessao> carregarSessoesblock(String filtro) {
+    public ObservableList<Sessao> carregarSessoesblock() {
         return sessaoDAO.buscarSessoesBloqueadas();
     }
 

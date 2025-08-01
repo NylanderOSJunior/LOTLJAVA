@@ -21,22 +21,27 @@ public class HomeView extends Application {
         menuLateral.setPadding(new Insets(15));
         menuLateral.setStyle("-fx-background-color: #333;");
 
-        Button btnConectar = new Button("Conectar Banco");
+        Button btnConectar = new Button("Analise de Banco");
         Button btnFuncionalidades = new Button("Funcionalidades");
         Button btnInfra = new Button("Infraestrutura");
+        Button btnCria = new Button("Cria Bases");
 
 
         // Aplicando a classe CSS aos botões
         btnConectar.getStyleClass().add("button");
         btnFuncionalidades.getStyleClass().add("button");
         btnInfra.getStyleClass().add("button");
+        btnCria.getStyleClass().add("button");
+
         
 
         btnConectar.setOnAction(e -> carregarTela(new ConexaoView(), primaryStage));
         btnFuncionalidades.setOnAction(e -> contentArea.getChildren().setAll(new FuncionalidadesView().criarTela(contentArea)));
         //btnInfra.setOnAction(e -> carregarTela(new InfraestruturaView(), primaryStage));
         btnInfra.setOnAction(e -> contentArea.getChildren().setAll(new InfraestruturaView().criarTela(contentArea)));
-        menuLateral.getChildren().addAll( btnConectar, btnFuncionalidades, btnInfra);
+        btnCria.setOnAction(e -> contentArea.getChildren().setAll(new CriaBaseView().criarTela(contentArea)));
+
+        menuLateral.getChildren().addAll( btnConectar, btnFuncionalidades, btnInfra, btnCria);
 
         // Área de conteúdo
         contentArea = new StackPane();
