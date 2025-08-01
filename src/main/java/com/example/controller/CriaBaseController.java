@@ -12,37 +12,18 @@ import java.io.IOException;
 
 public class CriaBaseController {
 
-    public void ajustarFirewall(TextField txtPorta, TextField txtNomePorta) {
-        String nome = txtNomePorta.getText().trim();
-        String portas = txtPorta.getText().trim();
+    public void GeraBackup(TextField txtSchema, TextField txtService, TextField txtNomePorta, TextField txtHost) {
+        String schema = txtSchema.getText().trim();
+        String service = txtService.getText().trim();
+        String porta = txtNomePorta.getText().trim();
+        String host = txtHost.getText().trim();
 
-        if (nome.isEmpty() || portas.isEmpty()) {
+        if (schema.isEmpty() || service.isEmpty() ||porta.isEmpty() || host.isEmpty()) {
             mostrarAlerta("Erro", "Preencha todos os campos para liberar a porta.");
             return;
         }
 
-        // Verifica se as portas são válidas (apenas números e vírgulas)
-        String[] listaPortas = portas.split(",");
-        for (String porta : listaPortas) {
-            porta = porta.trim();
-            if (!porta.matches("\\d+")) {  // Verifica se cada porta é um número
-                mostrarAlerta("Erro", "Insira apenas números separados por vírgula.");
-                return;
-            }
-        }
-
-        try {
-            // Libera para TCP
-            executarComando("netsh advfirewall firewall add rule name=\"" + nome + "_TCP\" dir=in action=allow protocol=TCP localport=" + portas);
-
-            // Libera para UDP
-            executarComando("netsh advfirewall firewall add rule name=\"" + nome + "_UDP\" dir=in action=allow protocol=UDP localport=" + portas);
-
-            mostrarAlerta("Sucesso", "As regras para as portas foram liberadas com sucesso!");
-
-        } catch (IOException | InterruptedException e) {
-            mostrarAlerta("Erro", "Falha ao liberar a porta: " + e.getMessage());
-        }
+        
     }
 
     private void executarComando(String comando) throws IOException, InterruptedException {
@@ -63,11 +44,11 @@ public class CriaBaseController {
 }
 
 
-public void criarBackup(TextField txtSchema, TextField txtService, TextField txtDiretorio, TextField txtDiretoriobk) {
+public void criarBackup(TextField txtSchema, TextField txtService, TextField txtDiretorio) {
     String schema = txtSchema.getText().trim();
     String service = txtService.getText().trim();
     String diretorio = txtDiretorio.getText().trim();
-    String diretoriobk = txtDiretoriobk.getText().trim();
+/*    String diretoriobk = txtDiretoriobk.getText().trim();
  
 
     if (schema.isEmpty() || service.isEmpty() || diretoriobk.isEmpty() || diretorio.isEmpty()) {
@@ -102,7 +83,7 @@ public void criarBackup(TextField txtSchema, TextField txtService, TextField txt
             "FOR /F \"TOKENS=1* DELIMS=/\" %%A IN ('date/t') DO SET nowDay=%%A\n" +
             "CALL FORFILES /S /p " + diretoriobk + " /d -30 /C \"CMD /C echo @FILE @FDATE\" > " + diretoriobk + "\\LOG\\%nowDay%.log\n" +
             "CALL FORFILES /S /p " + diretoriobk + " /d -30 /c \"CMD /C DEL @FILE /Q\"";
-
+            
     // Caminho do arquivo de script
     String scriptPath = diretorio + "\\BACKUP_ORACLE.bat";
 
@@ -118,7 +99,7 @@ public void criarBackup(TextField txtSchema, TextField txtService, TextField txt
 
     } catch (IOException  e) {
         mostrarAlerta("Erro", "Falha ao criar backup: " + e.getMessage());
-    }
+    }*/
 }
 
     private void mostrarAlerta(String titulo, String mensagem) {
