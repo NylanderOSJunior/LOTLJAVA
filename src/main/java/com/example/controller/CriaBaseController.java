@@ -22,8 +22,6 @@ public class CriaBaseController {
             mostrarAlerta("Erro", "Preencha todos os campos para liberar a porta.");
             return;
         }
-
-        
     }
 
     private void executarComando(String comando) throws IOException, InterruptedException {

@@ -20,14 +20,14 @@ public class CriaBaseView {
         Label lblTitulo = new Label("Funções Cria Base");
         lblTitulo.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
 
-        Button btnGerarBackup = new Button("Gerar Backup");
-        Button btnCriarBasezero = new Button("Base Implantação");
-        Button btnCriarBase = new Button("Criar Nova Base");
-
-
-        HBox buttonsBox = new HBox(20);
-        buttonsBox.setAlignment(Pos.CENTER);
-        buttonsBox.getChildren().addAll(btnGerarBackup, btnCriarBasezero, btnCriarBase);
+        CheckBox chkGerarBackup = new CheckBox("Gerar Backup");
+        CheckBox chkBaseImplantacao = new CheckBox("Base Implantação");
+        CheckBox chkCriarNovaBase = new CheckBox("Criar Nova Base");
+        
+        HBox flagsBox = new HBox(20);
+        flagsBox.setAlignment(Pos.CENTER);
+        flagsBox.getChildren().addAll(chkGerarBackup, chkBaseImplantacao, chkCriarNovaBase);
+        
 
         // 🔥 Campos para Gerar Backup
         VBox btnGerarBackupoBox = new VBox(10);
@@ -39,9 +39,11 @@ public class CriaBaseView {
         TextField txtNomePorta = new TextField();
         Label lblHost = new Label("Host:");
         TextField txtHost = new TextField();
-        Button btnGerarB = new Button("Gerar");
+        Button btnSelecDiretorio = new Button("Selecionar Diretório");
+        Label lblDiretorio = new Label("Diretório Backup:");
+        TextField txtDiretorio = new TextField();
 
-        btnGerarBackupoBox.getChildren().addAll(lblSchema, txtSchema, lblService, txtService, lblNomePorta, txtNomePorta, lblHost, txtHost, btnGerarB);
+        btnGerarBackupoBox.getChildren().addAll(lblSchema, txtSchema, lblService, txtService, lblNomePorta, txtNomePorta, lblHost, txtHost, lblDiretorio, txtDiretorio, btnSelecDiretorio);
 
         // 🔥 Campos para Criar Base Zerada
         VBox btnCriarBasezeroBox = new VBox(10);
@@ -58,16 +60,33 @@ public class CriaBaseView {
         TextField txtDiretoriobk = new TextField();
         Button btnSelecionarDiretorioBackup = new Button("Selecionar Diretório");
 
-        Button btnConfirmarBackup = new Button("Criar Backup");
+        btnCriarBasezeroBox.getChildren().addAll(lblSchemaB, txtSchemaB, lblServiceB, txtServiceB, btnSelecionarDiretorio, lblDiretoriobk, txtDiretoriobk, btnSelecionarDiretorioBackup);
 
-        btnCriarBasezeroBox.getChildren().addAll(lblSchemaB, txtSchemaB, lblServiceB, txtServiceB, btnSelecionarDiretorio, lblDiretoriobk, txtDiretoriobk, btnSelecionarDiretorioBackup, btnConfirmarBackup);
 
-        layout.getChildren().addAll(lblTitulo, buttonsBox);
+        Button btnExecutar = new Button("Iniciar Execução");
 
-        btnGerarB.setOnAction(e -> controller.GeraBackup(txtSchema,txtService,txtNomePorta, txtHost));
-        btnConfirmarBackup.setOnAction(e -> controller.criarBackup(txtSchema, txtService, txtDiretoriobk));
+        btnExecutar.setOnAction(e -> {
+            if (chkGerarBackup.isSelected()) {
+                controller.GeraBackup(txtSchema, txtService, txtNomePorta, txtHost);
+            }
+
+            if (chkBaseImplantacao.isSelected()) {
+                controller.criarBackup(txtSchemaB, txtServiceB, txtDiretoriobk);
+            }
+
+            if (chkCriarNovaBase.isSelected()) {
+                // Adicione aqui a lógica quando você tiver os campos e método prontos
+                // Ex: controller.criarNovaBase(...);
+            }
+
+            if (!chkGerarBackup.isSelected() && !chkBaseImplantacao.isSelected() && !chkCriarNovaBase.isSelected()) {
+                Alert alert = new Alert(Alert.AlertType.WARNING, "Selecione ao menos uma opção para executar.", ButtonType.OK);
+                alert.showAndWait();
+            }
+        });
 
         // 🎯 Ação para selecionar diretórios
+        btnSelecDiretorio.setOnAction(e -> controller.selecionarDiretorio(txtDiretorio));
         btnSelecionarDiretorio.setOnAction(e -> controller.selecionarDiretorio(txtDiretoriobk));
         btnSelecionarDiretorioBackup.setOnAction(e -> controller.selecionarDiretorio(txtDiretoriobk));
 
@@ -75,22 +94,34 @@ public class CriaBaseView {
         Button btnVoltar = new Button("Voltar para Home");
         btnVoltar.setOnAction(e -> contentArea.getChildren().setAll());
 
-        layout.getChildren().add(btnVoltar);
-
-        //  Vinculando ações dos botões
-        btnGerarBackup.setOnAction(e -> {
-            if (!layout.getChildren().contains(btnGerarBackupoBox)) {
-                layout.getChildren().add(btnGerarBackupoBox);
+                //  Vinculando ações dos botões
+        chkGerarBackup.setOnAction(e -> {
+            if (chkGerarBackup.isSelected()) {
+                if (!layout.getChildren().contains(btnGerarBackupoBox)) {
+                    layout.getChildren().add(btnGerarBackupoBox);
+                }
+            } else {
+                layout.getChildren().remove(btnGerarBackupoBox);
             }
-            layout.getChildren().remove(btnCriarBasezeroBox);
+        });
+        
+        chkBaseImplantacao.setOnAction(e -> {
+            if (chkBaseImplantacao.isSelected()) {
+                if (!layout.getChildren().contains(btnCriarBasezeroBox)) {
+                    layout.getChildren().add(btnCriarBasezeroBox);
+                }
+            } else {
+                layout.getChildren().remove(btnCriarBasezeroBox);
+            }
+        });
+        
+        // Se tiver VBox para "Criar Nova Base", adicione lógica semelhante:
+        chkCriarNovaBase.setOnAction(e -> {
+            // Exemplo: layout.getChildren().add(btnCriarBaseBox);
         });
 
-        btnCriarBasezero.setOnAction(e -> {
-            if (!layout.getChildren().contains(btnCriarBasezeroBox)) {
-                layout.getChildren().add(btnCriarBasezeroBox);
-            }
-            layout.getChildren().remove(btnGerarBackupoBox);
-        });
+        layout.getChildren().addAll(lblTitulo, flagsBox,btnExecutar,btnVoltar);
+        
 
         // 🧭 Adicionando o ScrollPane
         ScrollPane scrollPane = new ScrollPane();

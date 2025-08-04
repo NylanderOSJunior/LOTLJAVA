@@ -92,7 +92,7 @@ public void criarBackup(TextField txtSchema, TextField txtService, TextField txt
             "@echo on\n\n" +
             "C:\n" +
             "cd " + diretorio + "\n" +
-            "expdp BACKUPS/SAgr02435/" + service + " directory=BACKUP dumpfile=" + schema + "_%FORMATO%.dmp logfile=" + schema + "_%FORMATO%.log schemas=" + schema + "\n" +
+            "expdp BACKUPS/backups@" + service + " directory=BACKUP dumpfile=" + schema + "_%FORMATO%.dmp logfile=" + schema + "_%FORMATO%.log schemas=" + schema + "\n" +
             "zip -9 " + diretoriobk + "\\" + schema + "_%FORMATO%.zip " + diretoriobk + "\\" + schema + "_%FORMATO%.dmp " + diretoriobk + "\\" + schema + "_%FORMATO%.log\n\n" +
             "C:\n" +
             "cd " + diretoriobk + "\n" +
