@@ -38,6 +38,7 @@ public class SessaoView extends Application {
     private Button btnAplicarTempo = new Button("Aplicar Tempo");
     private Button btnAuditoria = new Button("Auditoria Oracle");
     private Button btnPerformance = new Button("Ajustes de Performance");
+    private Button btnDiagnostico = new Button("Diagnostico de Banco");
     private Label tempoAtividadeLabel;
 
     // Spinner e botão para ajustar o intervalo de recarregamento
@@ -188,6 +189,9 @@ public class SessaoView extends Application {
         // Botão para chamar tela Melhoria Index
         btnPerformance.setOnAction(e -> abrirTelaAjustePreformance());
 
+        // Botão para chamar tela Diagnostico
+        btnDiagnostico.setOnAction(e -> abrirTelaAuditoria());
+
         // Campo de busca
         searchField.setPromptText("Filtrar por usuário...");
         searchField.setOnKeyReleased(event -> atualizarTabela());
@@ -202,7 +206,7 @@ public class SessaoView extends Application {
         // botão de voltar para a Tela conexões
         btnVoltarcon.setOnAction(e -> voltarParaCon(primaryStage));
 
-        HBox searchBox = new HBox(10, searchField, spinnerTempo, btnAplicarTempo, btnAuditoria);
+        HBox searchBox = new HBox(10, searchField, spinnerTempo, btnAplicarTempo, btnAuditoria, btnDiagnostico);
         searchBox.setAlignment(Pos.CENTER_LEFT);
 
         HBox searchBox2 = new HBox(10, exportButton, btnPerformance, btnVoltarcon, btnVoltar);
@@ -228,6 +232,11 @@ public class SessaoView extends Application {
     }
 
     private void abrirTelaAuditoria() {
+        Stage stage = new Stage();
+        new AuditoriaView().start(stage);
+    }
+
+    private void abrirTelaDiagnostico() {
         Stage stage = new Stage();
         new AuditoriaView().start(stage);
     }
