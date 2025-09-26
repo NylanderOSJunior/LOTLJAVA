@@ -190,7 +190,7 @@ public class SessaoView extends Application {
         btnPerformance.setOnAction(e -> abrirTelaAjustePreformance());
 
         // Botão para chamar tela Diagnostico
-        btnDiagnostico.setOnAction(e -> abrirTelaAuditoria());
+        btnDiagnostico.setOnAction(e -> abrirTelaDiagnostico());
 
         // Campo de busca
         searchField.setPromptText("Filtrar por usuário...");
@@ -238,7 +238,7 @@ public class SessaoView extends Application {
 
     private void abrirTelaDiagnostico() {
         Stage stage = new Stage();
-        new AuditoriaView().start(stage);
+        new DiagnosticoView().start(stage);
     }
 
     private void abrirTelaAjustePreformance() {
