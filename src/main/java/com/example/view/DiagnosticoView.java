@@ -3,7 +3,9 @@ package com.example.view;
 import com.example.controller.DiagnosticoController;
 import javafx.application.Application;
 import javafx.geometry.Insets;
+import javafx.print.PrinterJob;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
@@ -20,13 +22,13 @@ public class DiagnosticoView extends Application {
         String versao = controller.obterVersaoBanco();
 
         // Montar textos
-        String paragrafo1 = "Validado que o servidor do banco de dados é um Linux com o nome de ORCTEST "
-                + "e está sob gerência da equipe da Cloud, o banco de dados Oracle é licenciado "
+        String paragrafo1 = "Validado que o servidor do banco de dados é um Linux com o nome de ORC101 "
+                + "e está sob gerência da equipe da Aliare Cloud, o banco de dados Oracle é licenciado "
                 + "sendo a versão: " + versao + ".";
 
-        String paragrafo2 = "Informado pelo cliente que após a atualização do sistema da x.x.x.x.x para a x.x.x.x, "
-                + "onde na sequência houve outra atualização para a x.x.x.x para resolução de outro problema "
-                + "no sistema, a rotina DE_EMISS passou a apresentar travamentos ao gerar o relatório. "
+        String paragrafo2 = "Informado pelo cliente que após a atualização do sistema da 7.6.0.2 para a 8.6.0.2B, "
+                + "onde na sequência houve outra atualização para a 8.6.0.2D para resolução de outro problema "
+                + "no sistema, a rotina FATU2103 passou a apresentar travamentos ao gerar o relatório. "
                 + "Informado também que sempre utilizou os filtros repassados onde somente no filtro de grupo "
                 + "eram retiradas as opções de serviços, filtro período de recebimento leva o tempo de um mês "
                 + "ou seja 01/08/2025 a 31/08/2025 os demais filtros levavam todos os dados.";
@@ -57,9 +59,26 @@ public class DiagnosticoView extends Application {
         label3.setWrapText(true);
         grid.add(label3, 0, 3);
 
-        Scene scene = new Scene(grid, 800, 400);
+        // Botão para imprimir
+        Button btnImprimir = new Button("Imprimir Diagnóstico");
+        btnImprimir.setOnAction(e -> imprimir(grid));
+        grid.add(btnImprimir, 0, 4);
+
+        Scene scene = new Scene(grid, 800, 450);
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    // Método para imprimir
+    private void imprimir(GridPane node) {
+        PrinterJob job = PrinterJob.createPrinterJob();
+        if (job != null && job.showPrintDialog(node.getScene().getWindow())) {
+            boolean success = job.printPage(node);
+            if (success) {
+                job.endJob();
+                System.out.println("Documento enviado para impressão!");
+            }
+        }
     }
 
     public static void main(String[] args) {
