@@ -22,13 +22,13 @@ public class DiagnosticoView extends Application {
         String versao = controller.obterVersaoBanco();
 
         // Montar textos
-        String paragrafo1 = "Validado que o servidor do banco de dados é um Linux com o nome de ORC101 "
-                + "e está sob gerência da equipe da Aliare Cloud, o banco de dados Oracle é licenciado "
+        String paragrafo1 = "Validado que o servidor do banco de dados é um Linux com o nome de ORCXXX "
+                + "e está sob gerência da equipe da Cloud, o banco de dados Oracle é licenciado "
                 + "sendo a versão: " + versao + ".";
 
-        String paragrafo2 = "Informado pelo cliente que após a atualização do sistema da 7.6.0.2 para a 8.6.0.2B, "
-                + "onde na sequência houve outra atualização para a 8.6.0.2D para resolução de outro problema "
-                + "no sistema, a rotina FATU2103 passou a apresentar travamentos ao gerar o relatório. "
+        String paragrafo2 = "Informado pelo cliente que após a atualização do sistema da XXXXXX para a XXXXX, "
+                + "onde na sequência houve outra atualização para a XXXXX para resolução de outro problema "
+                + "no sistema, a rotina XXXXXX passou a apresentar travamentos ao gerar o relatório. "
                 + "Informado também que sempre utilizou os filtros repassados onde somente no filtro de grupo "
                 + "eram retiradas as opções de serviços, filtro período de recebimento leva o tempo de um mês "
                 + "ou seja 01/08/2025 a 31/08/2025 os demais filtros levavam todos os dados.";
