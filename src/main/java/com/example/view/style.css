@@ -40,3 +40,22 @@
 .label {
     -fx-font-size: 14px;
 }
+
+.titulo {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2a2a2a;
+    -fx-padding: 0 0 10px 0;
+}
+
+.subtitulo {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #444;
+    -fx-padding: 10px 0 5px 0;
+}
+
+.paragrafo {
+    -fx-font-size: 12px;
+    -fx-text-fill: #333;
+}
